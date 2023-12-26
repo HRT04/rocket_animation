@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Rocket Animation</title>
+    <div
+      id="accelerationStrengthDisplay"
+      style="
+        color: black;
+        font-size: 14px;
+        position: fixed;
+        bottom: 32px;
+        right: 16px;
+        z-index: 10;
+      "
+    ></div>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+      }
+      #world {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background: linear-gradient(#144066, #c7c9ea);
+      }
+      /* videoの表示領域制御 */
+      #ar-container {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        overflow: hidden;
+        /* 最後面 */
+        z-index: -2;
+      }
+
+      /* ボタン */
+      #capture-button {
+        font-size: 20px;
+        position: fixed;
+        bottom: 12px;
+        left: 50%;
+        transform: translateX(-50%);
+        padding: 25px 40px;
+        background-color: #3498db;
+        color: black;
+        border: none;
+        cursor: pointer;
+        z-index: 1;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="world"></div>
+    <div id="ar-container">
+      <video id="video-element" autoplay playsinline></video>
+    </div>
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://unpkg.com/three@<version>/build/three.module.js",
+          "three/addons/": "https://unpkg.com/three@<version>/examples/jsm/"
+        }
+      }
+    </script>
+    <button id="capture-button">BUTTON</button>
+    <script src="../dist/SceneBundle.js"></script>
+    <script src="../dist/cencerBundle.js"></script>
+    <script src="../dist/LightsBundle.js"></script>
+    <script src="../dist/ParticleBundle.js"></script>
+    <script src="../dist/RocketBundle.js"></script>
+
+    <script src="../public/terminal.glb"></script>
+    <script src="../public/rocket.glb"></script>
+    <script type="module" src="./rkt/Scene.js"></script>
+    <script type="module" src="./rkt/Lights.js"></script>
+    <script type="module" src="./rkt/Particle.js"></script>
+    <script type="module" src="./rkt/Rocket.js"></script>
+    <script type="module" src="./rkt/cencer.js"></script>
+  </body>
+</html>
