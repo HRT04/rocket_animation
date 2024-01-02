@@ -46,7 +46,10 @@ export function recycleParticle(p: any) {
 }
 
 export function flyParticle(p: any) {
-  var targetPosX: any, targetPosY: any, targetSpeed: any, targetColor: any;
+  var targetPosX: number,
+    targetPosY: number,
+    targetSpeed: number,
+    targetColor: number;
   p.mesh.material.opacity = 1;
   p.mesh.position.x = -1000 + Math.random() * 2000;
   p.mesh.position.y = 100 + Math.random() * 2000;
@@ -72,6 +75,7 @@ export function flyParticle(p: any) {
 
 let cloudTargetPosX: any,
   cloudTargetPosY: any,
+  cloudTargetPosZ: any,
   cloudTargetSpeed: any,
   cloudTargetColor: any,
   cloudSlowMoFactor: number = 0.65;
@@ -102,6 +106,38 @@ export const dropParticle = (p: any, rocket: any) => {
     x: s * 1.8,
     y: s * 1.8,
     z: s * 1.8,
+    ease: "linear",
+  });
+};
+
+export const launchsmoke = (p: any, rocket: any) => {
+  p.mesh.material.opacity = 0.6;
+  p.mesh.position.x = 0;
+  p.mesh.position.y = rocket.mesh.position.y - 40;
+  p.mesh.position.z = 0;
+  var s: number = Math.random() * 0.2 + 0.35;
+  p.mesh.scale.set(0.2 * s, 0.2 * s, 0.2 * s);
+  cloudTargetPosX = (Math.random() - 0.5) * 45;
+  cloudTargetPosY = rocket.mesh.position.y - 50;
+  cloudTargetPosZ = (Math.random() - 0.5) * 45;
+  cloudTargetSpeed = 0.8 + Math.random() * 0.6;
+  cloudTargetColor = 0xa3a3a3;
+
+  gsap.to(p.mesh.position, {
+    duration: 3.0 * cloudTargetSpeed * cloudSlowMoFactor,
+    x: cloudTargetPosX,
+    y: cloudTargetPosY,
+    z: cloudTargetPosZ,
+    ease: "none",
+    onComplete: recycleParticle,
+    onCompleteParams: [p],
+  });
+
+  gsap.to(p.mesh.scale, {
+    duration: cloudTargetSpeed * cloudSlowMoFactor,
+    x: s * 0.7,
+    y: s * 0.7,
+    z: s * 0.7,
     ease: "linear",
   });
 };

@@ -1,5 +1,6 @@
 import * as THREE from "three";
 export default THREE;
+import { ARUtils, ARView } from "three.ar.js";
 import { Rocket } from "./Rocket";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import {
@@ -7,13 +8,13 @@ import {
   particleArray,
   dropParticle,
   flyParticle,
+  launchsmoke,
   //fringSmokeLight,
 } from "./Particle";
 import { createLights } from "./Lights";
 //import { Rocket } from "./Rocket";
 import { loadModel } from "./GLTF";
 import { handleMotion } from "./cencer_camera";
-
 export let scene: THREE.Scene;
 let HEIGHT: number, WIDTH: number;
 export let renderer: THREE.WebGLRenderer;
@@ -85,6 +86,8 @@ interface Colors {
   windowBlue: number;
   windowDarkBlue: number;
   thrusterOrange: number;
+  deepblue: number;
+  rocket: number;
 }
 
 export const Colors: Colors = {
@@ -98,24 +101,39 @@ export const Colors: Colors = {
   windowBlue: 0xaabbe3,
   windowDarkBlue: 0x4a6e8a,
   thrusterOrange: 0xfea036,
+  deepblue: 0x003366,
+  rocket: 0xc8c8c8,
 };
 
 let rocket: any;
 let terminal: any;
-function init(threshold: number) {
+async function init(threshold: number) {
   let n: number;
   //createScene();
   createRocket();
-  // const rocket_glb_path: string = "../../public/rocket.glb";
+  // const rocket_glb_path: string = "./rocket.glb";
   // const rkt_pst: THREE.Vector3 = new THREE.Vector3(0, 1.5, 0);
-  // rocket = loadModel(scene, new GLTFLoader(), rkt_pst, rocket_glb_path, 0.1);
+  // rocket = await loadModel(
+  //   scene,
+  //   new GLTFLoader(),
+  //   rkt_pst,
+  //   rocket_glb_path,
+  //   0.1
+  // );
   const bnd_box: THREE.Box3 = new THREE.Box3().setFromObject(rocket.mesh);
   const grnd: THREE.Vector3 = new THREE.Vector3(
-    rocket.mesh.position.x + 2,
+    rocket.mesh.position.x + 1,
     bnd_box.min.y,
     rocket.mesh.position.z
   );
-  terminal = loadModel(scene, new GLTFLoader(), grnd, "./terminal.glb", 1.0);
+  terminal = await loadModel(
+    scene,
+    new GLTFLoader(),
+    grnd,
+    "./terminal.glb",
+    2.0
+  );
+
   createLights();
   //fringSmokeLight(firingLight);
   // createSky();
@@ -123,11 +141,11 @@ function init(threshold: number) {
   // document.addEventListener('mousemove', handleMouseMove, false);
   // controls = new THREE.OrbitControls(camera, renderer.domElement);
   if (threshold > 30) {
-    let n = threshold * 0.05;
+    let n = threshold * 0.005;
     loop(n);
   }
   if (30 > threshold && threshold > 25) {
-    let n = threshold * 0.01;
+    let n = threshold * 0.005;
     loop(n);
   } else {
     let n = threshold * 0.005;
@@ -177,7 +195,7 @@ const createRocket = () => {
   rocket = new Rocket();
   rocket.mesh.scale.set(0.1, 0.1, 0.1);
   rocket.mesh.position.y = 0;
-  rocket.mesh.rotation.y = 1.5;
+  rocket.mesh.rotation.y = 1.58;
   scene.add(rocket.mesh);
   // let base = new Base();
   // base.mesh.position.y = -190;
@@ -185,13 +203,8 @@ const createRocket = () => {
   // scene.add(base.mesh);
 };
 
-let num: number = 0.1;
+let num: number = 0;
 const loop = (th: number) => {
-  if (rocket.mesh.position.y < 30) {
-    num += 0.005;
-  } else {
-    num += 0.05;
-  }
   // render the scene
   const cmr: THREE.Vector3 = new THREE.Vector3(0, 10, 60);
   camera.position.copy(cmr);
@@ -202,6 +215,16 @@ const loop = (th: number) => {
   rocket.mesh.rotation.x = Math.random() * Math.sin(1) * 0.04;
   rocket.mesh.rotation.z = Math.random() * Math.sin(1) * 0.04;
   rocket.mesh.position.z = Math.random() * Math.PI * 0.5;
+
+  if (rocket.mesh.position.y < 15) {
+    num += 0.003;
+  }
+  if (15 <= rocket.mesh.position.y && rocket.mesh.position.y < 30) {
+    num += 0.007;
+  }
+  if (30 <= rocket.mesh.position.y) {
+    num += 0.02;
+  }
   // if (rocket.mesh.position.y < 130) {
   //   rocket.mesh.position.y += 1;
   //   rocket.mesh.position.x = Math.random() * Math.PI * 0.5;
@@ -217,9 +240,10 @@ const loop = (th: number) => {
   // }
 
   setTimeout(() => {
-    createSmoke(rocket);
-  }, 1000);
-  createFlyingParticles();
+    create_Smoke(rocket);
+    createFlyingParticles();
+  }, 7000);
+  create_launchSmoke(rocket);
   requestAnimationFrame(loop);
 };
 
@@ -233,9 +257,14 @@ const getParticle = () => {
   return p;
 };
 
-const createSmoke = (rocket: any) => {
+const create_Smoke = (rocket: any) => {
   let p = getParticle();
   dropParticle(p, rocket);
+};
+
+const create_launchSmoke = (rocket: any) => {
+  let p = getParticle();
+  launchsmoke(p, rocket);
 };
 
 const createFlyingParticles = () => {

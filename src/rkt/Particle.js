@@ -56,7 +56,7 @@ export function flyParticle(p) {
         onCompleteParams: [p],
     });
 }
-var cloudTargetPosX, cloudTargetPosY, cloudTargetSpeed, cloudTargetColor, cloudSlowMoFactor = 0.65;
+var cloudTargetPosX, cloudTargetPosY, cloudTargetPosZ, cloudTargetSpeed, cloudTargetColor, cloudSlowMoFactor = 0.65;
 export var dropParticle = function (p, rocket) {
     p.mesh.material.opacity = 1;
     p.mesh.position.x = 0;
@@ -81,6 +81,35 @@ export var dropParticle = function (p, rocket) {
         x: s * 1.8,
         y: s * 1.8,
         z: s * 1.8,
+        ease: "linear",
+    });
+};
+export var launchsmoke = function (p, rocket) {
+    p.mesh.material.opacity = 0.6;
+    p.mesh.position.x = 0;
+    p.mesh.position.y = rocket.mesh.position.y - 40;
+    p.mesh.position.z = 0;
+    var s = Math.random() * 0.2 + 0.35;
+    p.mesh.scale.set(0.2 * s, 0.2 * s, 0.2 * s);
+    cloudTargetPosX = (Math.random() - 0.5) * 45;
+    cloudTargetPosY = rocket.mesh.position.y - 50;
+    cloudTargetPosZ = (Math.random() - 0.5) * 45;
+    cloudTargetSpeed = 0.8 + Math.random() * 0.6;
+    cloudTargetColor = 0xa3a3a3;
+    gsap.to(p.mesh.position, {
+        duration: 3.0 * cloudTargetSpeed * cloudSlowMoFactor,
+        x: cloudTargetPosX,
+        y: cloudTargetPosY,
+        z: cloudTargetPosZ,
+        ease: "none",
+        onComplete: recycleParticle,
+        onCompleteParams: [p],
+    });
+    gsap.to(p.mesh.scale, {
+        duration: cloudTargetSpeed * cloudSlowMoFactor,
+        x: s * 0.7,
+        y: s * 0.7,
+        z: s * 0.7,
         ease: "linear",
     });
 };

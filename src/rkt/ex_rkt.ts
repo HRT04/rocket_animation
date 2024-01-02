@@ -36,4 +36,4 @@ rocket.mesh.scale.set(0.1, 0.1, 0.1);
 rocket.mesh.position.y = 0;
 rocket.mesh.rotation.y = 1.5;
 scene.add(rocket.mesh);
-export_rocket(scene, "rocket.glb");
+export_rocket(rocket.mesh, "rocket.glb");

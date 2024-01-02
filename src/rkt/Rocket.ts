@@ -16,13 +16,13 @@ export class Rocket {
 
     // 形の編集
     let geoFinShape: THREE.Shape = new THREE.Shape();
-    let x: number = 0,
-      y: number = 0;
+    let x: number = -15,
+      y: number = -40;
 
     geoFinShape.moveTo(x, y);
-    geoFinShape.lineTo(x, y + 50);
-    geoFinShape.lineTo(x + 35, y + 10);
-    geoFinShape.lineTo(x + 35, y - 10);
+    geoFinShape.lineTo(x, y + 80);
+    geoFinShape.lineTo(x + 20, y + 50);
+    geoFinShape.lineTo(x + 20, y - 10);
     geoFinShape.lineTo(x, y);
 
     interface ExtrudeSettings {
@@ -43,32 +43,33 @@ export class Rocket {
       bevelThickness: 1,
     };
 
-    let geoWindowShape: THREE.Shape = new THREE.Shape();
-    geoWindowShape.moveTo(x - 18, y + 45);
-    geoWindowShape.lineTo(x + 18, y + 45);
-    geoWindowShape.lineTo(x + 18, y - 45);
-    geoWindowShape.lineTo(x - 18, y - 45);
-    geoWindowShape.lineTo(x - 18, y + 45);
+    // let geoWindowShape: THREE.Shape = new THREE.Shape();
+    // geoWindowShape.moveTo(x - 18, y + 45);
+    // geoWindowShape.lineTo(x + 18, y + 45);
+    // geoWindowShape.lineTo(x + 18, y - 45);
+    // geoWindowShape.lineTo(x - 18, y - 45);
+    // geoWindowShape.lineTo(x - 18, y + 45);
 
     // geometry
-    let geoCone: THREE.ConeGeometry = new THREE.ConeGeometry(50, 70, 8);
+    let geoCone: THREE.ConeGeometry = new THREE.ConeGeometry(30, 40, 32);
+
     let geoUpper: THREE.CylinderGeometry = new THREE.CylinderGeometry(
+      30,
+      45,
       50,
-      75,
-      80,
-      8
+      32
     );
     let geoMiddle: THREE.CylinderGeometry = new THREE.CylinderGeometry(
-      75,
-      85,
-      80,
-      8
+      45,
+      55,
+      60,
+      32
     );
     let geoColumn: THREE.CylinderGeometry = new THREE.CylinderGeometry(
-      85,
-      85,
-      200,
-      8
+      55,
+      55,
+      400,
+      32
     );
     let geoWindowFrameOuter: THREE.CylinderGeometry =
       new THREE.CylinderGeometry(55, 55, 40, 8);
@@ -91,41 +92,42 @@ export class Rocket {
       40,
       8
     );
-    let geoWindowReflection: THREE.ShapeGeometry = new THREE.ShapeGeometry(
-      geoWindowShape
-    );
+    // let geoWindowReflection: THREE.ShapeGeometry = new THREE.ShapeGeometry(
+    //   geoWindowShape
+    // );
     let geoFin: THREE.ExtrudeGeometry = new THREE.ExtrudeGeometry(
       geoFinShape,
       finExtrudeSettings
     );
     let geoThruster: THREE.CylinderGeometry = new THREE.CylinderGeometry(
-      55,
-      55,
       40,
-      8
+      40,
+      20,
+      32
     );
     let geoConnector: THREE.CylinderGeometry = new THREE.CylinderGeometry(
-      55,
-      35,
-      10,
-      8
+      40,
+      20,
+      20,
+      32
     );
 
     // materials
     let matRoof1: THREE.MeshPhongMaterial = new THREE.MeshPhongMaterial({
-      color: Colors.red1,
+      color: Colors.rocket,
       flatShading: true,
     });
     let matRoof2: THREE.MeshPhongMaterial = new THREE.MeshPhongMaterial({
-      color: Colors.red2,
+      color: Colors.rocket,
       flatShading: true,
     });
     let matRoof3: THREE.MeshPhongMaterial = new THREE.MeshPhongMaterial({
-      color: Colors.red3,
+      color: Colors.rocket,
       flatShading: true,
     });
+
     let matBody: THREE.MeshPhongMaterial = new THREE.MeshPhongMaterial({
-      color: Colors.grey,
+      color: Colors.rocket,
       flatShading: true,
     });
     let matWindowFrame: THREE.MeshPhongMaterial = new THREE.MeshPhongMaterial({
@@ -144,18 +146,23 @@ export class Rocket {
       color: Colors.thrusterOrange,
       flatShading: true,
     });
+    let Fins: THREE.MeshPhongMaterial = new THREE.MeshPhongMaterial({
+      color: Colors.deepblue, // 例えば赤色
+      flatShading: true,
+    });
 
     let m: THREE.Mesh = new THREE.Mesh(geoCone, matRoof1);
-    m.position.y = 70;
+    m.position.y = 120;
     m.castShadow = true;
     m.receiveShadow = true;
 
     let m2: THREE.Mesh = new THREE.Mesh(geoUpper, matRoof2);
+    m2.position.y = 75;
     m2.castShadow = true;
     m2.receiveShadow = true;
 
     let m3: THREE.Mesh = new THREE.Mesh(geoMiddle, matRoof3);
-    m3.position.y = -70;
+    m3.position.y = 20;
     m3.castShadow = true;
     m3.receiveShadow = true;
 
@@ -175,14 +182,15 @@ export class Rocket {
     let yRotation: number = 1.6;
     let scale: number = 1.8;
     let finWidth: number = 15;
-    let mFinLeft: THREE.Mesh = new THREE.Mesh(geoFin, matRoof3);
+    let mFinLeft: THREE.Mesh = new THREE.Mesh(geoFin, Fins);
     mFinLeft.position.y = yPlacement;
     mFinLeft.position.z = -zPlacement;
     mFinLeft.rotation.y = yRotation - 0.08;
     mFinLeft.scale.set(scale, scale, scale);
     mFinLeft.castShadow = true;
     mFinLeft.receiveShadow = true;
-    let mFinRight: THREE.Mesh = new THREE.Mesh(geoFin, matRoof3);
+
+    let mFinRight: THREE.Mesh = new THREE.Mesh(geoFin, Fins);
     mFinRight.position.y = yPlacement;
     mFinRight.position.z = zPlacement;
     mFinRight.rotation.y = -yRotation;
@@ -190,9 +198,25 @@ export class Rocket {
     mFinRight.castShadow = true;
     mFinRight.receiveShadow = true;
 
+    let mFinFront: THREE.Mesh = new THREE.Mesh(geoFin, Fins);
+    mFinFront.position.y = yPlacement;
+    mFinFront.position.x = -xPlacement - 75;
+    mFinFront.rotation.y = Math.PI - 0.05;
+    mFinFront.scale.set(scale, scale, scale);
+    mFinFront.castShadow = true;
+    mFinFront.receiveShadow = true;
+
+    let mFinBack: THREE.Mesh = new THREE.Mesh(geoFin, Fins);
+    mFinBack.position.y = yPlacement;
+    mFinBack.position.x = xPlacement + 75;
+    mFinBack.rotation.y = -0.05;
+    mFinBack.scale.set(scale, scale, scale);
+    mFinBack.castShadow = true;
+    mFinBack.receiveShadow = true;
+
     let mfins: THREE.Object3D = new THREE.Object3D();
     mfins.rotation.y += 0.05;
-    mfins.add(mFinLeft, mFinRight);
+    mfins.add(mFinLeft, mFinRight, mFinFront, mFinBack);
     this.body = new THREE.Object3D();
     this.body.add(mColumn, mfins);
 
@@ -220,31 +244,31 @@ export class Rocket {
     m6.castShadow = true;
     m6.receiveShadow = true;
 
-    let mWindowReflection: THREE.Mesh = new THREE.Mesh(
-      geoWindowReflection,
-      matWindowReflection
-    );
-    mWindowReflection.position.x = -90;
-    mWindowReflection.position.y = -200;
-    mWindowReflection.rotation.y = -1.5;
-    mWindowReflection.rotation.x = 0.82;
-    mWindowReflection.receiveShadow = true;
+    // let mWindowReflection: THREE.Mesh = new THREE.Mesh(
+    //   geoWindowReflection,
+    //   matWindowReflection
+    // );
+    // mWindowReflection.position.x = -90;
+    // mWindowReflection.position.y = -200;
+    // mWindowReflection.rotation.y = -1.5;
+    // mWindowReflection.rotation.x = 0.82;
+    // mWindowReflection.receiveShadow = true;
 
     this.window = new THREE.Object3D();
-    this.window.add(m5, m6, mWindowReflection);
+    // this.window.add(m5, m6, mWindowReflection);
 
     let mThruster: THREE.Mesh = new THREE.Mesh(geoThruster, matWindowFrame);
-    mThruster.position.y = -305;
+    mThruster.position.y = -415;
     mThruster.receiveShadow = true;
     mThruster.castShadow = true;
 
     let mConnector: THREE.Mesh = new THREE.Mesh(geoConnector, matThruster);
-    mConnector.position.y = -330;
+    mConnector.position.y = -435;
     mConnector.receiveShadow = true;
     mConnector.castShadow = true;
 
     let mBurner: THREE.Mesh = new THREE.Mesh(geoThruster, matWindowFrame);
-    mBurner.position.y = -340;
+    mBurner.position.y = -440;
     mBurner.scale.set(0.7, 0.55, 0.7);
     mBurner.receiveShadow = true;
     mBurner.castShadow = true;
