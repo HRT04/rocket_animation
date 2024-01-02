@@ -1,5 +1,5 @@
-import fs from "fs";
-import path from "path";
+const fs = require("fs");
+const path = require("path");
 
 // index.d.tsを生成するコード
 const declarationContent = 'declare module "three.ar.js";\n';
